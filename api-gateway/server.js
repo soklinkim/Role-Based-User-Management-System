@@ -39,24 +39,31 @@ app.use(
 
 // Admin Service
 
+app.use("/admin", authenticateToken, authorizeRole("admin"));
+
 app.use(
-    "/admin",
-    authenticateToken,
-    authorizeRole("admin"),
     createProxyMiddleware({
         target: process.env.ADMIN_SERVICE,
-        changeOrigin: true
+        changeOrigin: true,
+        pathFilter: "/admin"
     })
 );
 
 // User Service
+app.use("/user", authenticateToken, authorizeRole("user"));
+
 app.use(
-    "/user",
-    authenticateToken,
-    authorizeRole("user"),
     createProxyMiddleware({
         target: process.env.USER_SERVICE,
-        changeOrigin: true
+        changeOrigin: true,
+        pathFilter: "/user",
+        on: {
+            proxyReq: (proxyReq, req) => {
+                if (req.user) {
+                    proxyReq.setHeader("x-user-id", req.user.id);
+                }
+            }
+        }
     })
 );
 
