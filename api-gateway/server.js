@@ -71,6 +71,6 @@ app.use(
 
 app.listen(process.env.PORT, () => {
     console.log(
-        `API Gateway running at http://localhost:${process.env.PORT}`
+        `API Gateway running at http://54.226.171.52:${process.env.PORT}`
     );
 });
